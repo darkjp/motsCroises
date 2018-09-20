@@ -5,6 +5,7 @@ import java.util.List;
 
 import pobj.motx.tme1.Case;
 import pobj.motx.tme1.Emplacement;
+import pobj.motx.tme1.Grille;
 import pobj.motx.tme1.GrillePlaces;
 
 public class GrillePotentiel {
@@ -13,6 +14,7 @@ public class GrillePotentiel {
 	private Dictionnaire dicoFR;
 	private List<Dictionnaire> motsPot;
 	private List<IContrainte> contraintes;
+
 
 	public GrillePotentiel(GrillePlaces grille, Dictionnaire dicoComplet) {
 		this.grilleActuelle = grille;
@@ -48,13 +50,33 @@ public class GrillePotentiel {
 					for (int c2 = 0; c2< caseV.size(); c2++) {
 						// verif case = case, et les cases vides pour Horiz et Vert
 						if (caseH.get(c1).equals(caseV.get(c2)) && caseH.get(c1).isVide() && caseV.get(c2).isVide()) {
-									contraintes.add(new CroixContrainte(m1, c1, m2, c2));
+							CroixContrainte cont2bReduced= new CroixContrainte(m1, c1, m2, c2);
+							cont2bReduced.reduce(this);
+							contraintes.add(cont2bReduced);
 						}
 					}
 				}
 			}
 		}
+		propage();
 	}
+	
+	private boolean propage() {
+		int motElimines = 0;
+		while (true) {
+			motElimines = 0;
+			//parcourt chaque mot dans la liste "contraintes"
+			// et affine la liste.
+			for (IContrainte ct : contraintes) {
+				motElimines += ct.reduce(this);
+			}
+			if (isDead())
+				return false;	
+			if (motElimines == 0) 
+				return true;
+		}
+	}
+	
 
 	public GrillePlaces getGrillePlaces() {
 		return grilleActuelle;

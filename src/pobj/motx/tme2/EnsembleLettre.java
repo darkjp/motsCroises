@@ -15,6 +15,10 @@ public class EnsembleLettre {
 		allLettres.add(charAt);
 		
 	}
+	
+	public int size() {
+		return allLettres.size();
+	}
 
 	public boolean contains(char c) {
 		if (allLettres.contains(c))
